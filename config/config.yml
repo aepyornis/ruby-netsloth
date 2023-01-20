@@ -1,0 +1,17 @@
+gather_interval_seconds: 60
+org: 'calyx'
+bucket: 'network'
+user: 'elijah'
+location: 'seattle'
+device: 'mifi-m2000'
+
+iperf3_duration_seconds: 3
+iperf3_cmd: '/usr/bin/iperf3'
+iperf3_host: 'speedtest.calyx.dev'
+iperf3_port: '5201'
+
+influxdb_host: 'http://185.220.103.39:8086'
+influxdb_token: 'awlC8h2nY124E8joIdTUbRaATI4B00ldPIV7QRLfmdJonk5WPYu72IoOML01HPCqFijRwTjDzwrw5oKvLg7v5A=='
+
+measurements:
+  - iperf3
