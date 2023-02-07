@@ -21,18 +21,6 @@ module Netsloth
       @data = parse_results(json.join("\n"))
     end
 
-    def submit_data
-      return if !@data&.any?
-      app.writer.write(
-        data: {
-          name: 'iperf3',
-          tags: {location: conf.location, user: conf.user, device: conf.device},
-          fields: @data,
-          time: Time.now.to_i
-        }
-      )
-    end
-
     private
 
     def parse_results(json)

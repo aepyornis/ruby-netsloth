@@ -3,14 +3,30 @@ module Netsloth
     CONFIG = File.expand_path('../../../config/config.yml', __FILE__)
     include ShellUtils
 
+    attr_reader :conf, :handlers
+
+    def initialize
+      @conf = Netsloth::Config.new(CONFIG)
+      @handlers = @conf.measurements.map do |measturement_name|
+        Netsloth::Measurement.const_get(measturement_name.capitalize)
+      end
+    end
+
     def main
+      @handlers.each do |c|
+        puts "SETUP #{c.name}"
+        c.new(self).setup
+      end
+
       while true
-        conf.measurements.each do |measurement|
-          handler = Netsloth::Measurement.const_get(measurement.capitalize).new(self)
-          handler.setup
-          puts "GATHER #{measurement}"
+        @handlers.each do |measurement_class|
+          handler = measurement_class.new(self)
+          puts "GATHER #{measurement_class.name}"
           handler.gather_data
-          puts "SUBMIT #{measurement}"
+          if @conf.debug
+            puts "DATA #{measurement_class.name} #{handler.data}"
+          end
+          puts "SUBMIT #{measurement_class.name}"
           handler.submit_data
         end
         puts "SLEEP for #{conf.gather_interval_seconds} seconds"
@@ -23,10 +39,6 @@ module Netsloth
     def quit
       puts "QUIT"
       exit
-    end
-
-    def conf
-      @conf ||= Netsloth::Config.new(CONFIG)
     end
 
     def client
