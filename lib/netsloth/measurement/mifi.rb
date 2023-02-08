@@ -12,11 +12,24 @@ module Netsloth
     end
 
     def gather_data
-      @data = JSON.parse(Net::HTTP.get(URI(ENDPOINT)))['statusData']
-
-      if @data.nil?
+      results = JSON.parse(Net::HTTP.get(URI(ENDPOINT)))['statusData']
+      if results.nil?
         puts "Error gathering data from mifi"
+        return
+      else
+        @data = parse_results(results)
       end
+    end
+
+    private
+
+    INT_FIELDS = %w[statusBarBatteryPercent statusBarBytesReceived statusBarBytesTotal statusBarBytesTransmitted statusBarClientListSize statusBarSignalBars]
+
+    def parse_results(json)
+      INT_FIELDS.each do |f|
+        json[f] = json[f].to_i unless json[f].nil?
+      end
+      json
     end
   end
 end
