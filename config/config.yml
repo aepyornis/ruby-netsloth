@@ -15,3 +15,7 @@ influxdb_token: 'awlC8h2nY124E8joIdTUbRaATI4B00ldPIV7QRLfmdJonk5WPYu72IoOML01HPC
 
 measurements:
   - iperf3
+#  - mifi
+
+
+debug: false
