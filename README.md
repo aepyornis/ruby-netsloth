@@ -24,6 +24,9 @@ Configuration
 
 Edit the file `config/config.yml` with the bucket and API token you created in the setup.
 
+The ooni measurements require the `miniooni` program which can be obtained from [github.com/ooni/probe-cli](https://github.com/ooni/probe-cli/releases)
+
+
 Run
 ----------------------------
 
@@ -57,3 +60,25 @@ A simple graph showing the aggregate bandwidth for all users at a specific locat
 If you want to further aggregate over all devices:
 
       |> drop(columns: ["user", "device"])
+
+
+Using calyxos and termux
+--------------------------------------------
+
+Install [termux from f-droid](https://f-droid.org/en/packages/com.termux/)
+
+Open termux and install packages: `pkg update && pkg install curl git ruby iperf3`
+
+Clone netsloth and install packages
+
+```
+git clone https://0xacab.org/calyx/experiments/netsloth.git
+cd netsloth
+bundle install
+```
+
+Download miniooni: `curl -L -O "https://github.com/ooni/probe-cli/releases/download/v3.16.7/miniooni-android-arm64" && chmod +x miniooni-android-arm64`
+
+Change variables in __config/config.yml__ to match your location, device, etc.
+
+By default `iperf3_cmd` is located at  `/data/data/com.termux/files/user/bin/iperf3`

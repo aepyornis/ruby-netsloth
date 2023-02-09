@@ -8,7 +8,7 @@ module Netsloth
     def initialize
       @conf = Netsloth::Config.new(CONFIG)
       @handlers = @conf.measurements.map do |measturement_name|
-        Netsloth::Measurement.const_get(measturement_name.capitalize)
+        Netsloth::Measurement.const_get(measturement_name.split('.').map(&:capitalize).join("::"))
       end
     end
 
@@ -28,6 +28,10 @@ module Netsloth
           end
           puts "SUBMIT #{measurement_class.name}"
           handler.submit_data
+
+          if @handlers.length > 1
+            sleep conf.pause_between_measurements
+          end
         end
         puts "SLEEP for #{conf.gather_interval_seconds} seconds"
         sleep conf.gather_interval_seconds
