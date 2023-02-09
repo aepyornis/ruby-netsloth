@@ -5,6 +5,9 @@ require_relative 'netsloth/app'
 require_relative 'netsloth/measurement'
 require_relative 'netsloth/measurement/iperf3'
 require_relative 'netsloth/measurement/mifi'
+require_relative 'netsloth/measurement/ooni'
+require_relative 'netsloth/measurement/ooni/dash'
+require_relative 'netsloth/measurement/ooni/ndt'
 require 'influxdb-client'
 
 module Netsloth

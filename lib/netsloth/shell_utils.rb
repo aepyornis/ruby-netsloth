@@ -23,7 +23,7 @@ module Netsloth
       end
       Open3.popen2e(ENV, *cmd) do |stdin, out, thread|
         while line = out.gets do
-          yield line
+          yield line if block_given?
         end
         exit_status = thread.value.exitstatus.to_i
       end
