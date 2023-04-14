@@ -16,9 +16,14 @@ module Netsloth
           raise ArgumentError, "No such configuration variable #{method}"
         end
       else
-        @data[method]
+        if @data[method].is_a? String
+          @data[method].sub('HOME',Netsloth::App::HOME)
+        else
+          @data[method]
+        end
       end
     end
+
     def initialize(path)
       unless File.exist?(path)
         puts "No such configuration file #{path}"

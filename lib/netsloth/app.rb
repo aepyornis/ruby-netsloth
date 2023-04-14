@@ -1,6 +1,8 @@
 module Netsloth
   class App
     CONFIG = File.expand_path('../../../config/config.yml', __FILE__)
+    HOME = File.expand_path('../../..', __FILE__)
+
     include ShellUtils
 
     attr_reader :conf, :handlers

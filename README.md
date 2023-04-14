@@ -15,7 +15,7 @@ Open http://myserver:8086 to set up initial user. Alternately, see https://hub.d
 
 When it asks you to set up InfluxDB just ignore that step.
 
-After creating your user, the next thing you must do is create a bucket. Navigate to Load Data > Buckets > Create Bucket.
+After creating your user, the next thing you must do is create a bucket. Navigate to Load Data > Buckets > Create Bucket. Change 'config.yml' entry 'bucket' to match the name you gave the bucket.
 
 Next create an API token from Load Data > API Tokens > Generate API Token.
 
@@ -24,8 +24,22 @@ Configuration
 
 Edit the file `config/config.yml` with the bucket and API token you created in the setup.
 
-The ooni measurements require the `miniooni` program which can be obtained from [github.com/ooni/probe-cli](https://github.com/ooni/probe-cli/releases)
+Helper programs
+----------------------------
 
+iperf3:
+
+    sudo apt install iperf3
+
+miniooni:
+
+    download from https://github.com/ooni/probe-cli/releases
+
+fast-cli:
+
+    cd netsloth
+    sudo apt install npm
+    npm install fast-cli
 
 Run
 ----------------------------

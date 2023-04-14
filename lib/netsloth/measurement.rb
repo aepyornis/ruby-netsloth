@@ -17,10 +17,25 @@ module Netsloth
       {
         name: self.class.name.split(":").last.downcase,
         tags: { location: conf.location, user: conf.user, device: conf.device },
-        fields: @data,
+        fields: convert_int_to_float(@data),
         time: Time.now.to_i
       }
     end
+
+    # ensures that all the number types are floats, since with InfluxDB you cannot
+    # first submit an integer and then later submit a float.
+    # There is probably a better way where we can first submit a schema.
+    def convert_int_to_float(hsh)
+      hsh.each do |key, value|
+        if value.is_a? Integer
+          hsh[key] = value.to_f
+        elsif value.is_a? Hash
+          ensure_float(hsh[key])
+        end
+      end
+      hsh
+    end
+
 
     def submit_data
       if @data && @data.any?
