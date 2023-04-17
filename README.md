@@ -48,6 +48,17 @@ Run netsloth:
 
     bin/netsloth
 
+Docker
+----------------------------
+
+Build image:
+
+    docker build -t netsloth .
+
+Run image
+
+    docker run -it netsloth
+
 Further Reading
 ----------------------------
 

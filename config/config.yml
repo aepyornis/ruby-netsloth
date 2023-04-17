@@ -20,8 +20,8 @@ influxdb_token: 'awlC8h2nY124E8joIdTUbRaATI4B00ldPIV7QRLfmdJonk5WPYu72IoOML01HPC
 measurements:
  - iperf3
  - fast
- - ooni.dash
- - ooni.ndt
+# - ooni.dash
+# - ooni.ndt
 # - mifi
 
 pause_between_measurements: 5
