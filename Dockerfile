@@ -8,7 +8,6 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       apt-file ruby bundler npm iperf3 && \
     apt-file update && \
-    rm -rf /var/lib/apt/lists/* && \
     rm -rf /usr/share/doc/* && \
     rm -rf /usr/share/locale/*
 
