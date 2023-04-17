@@ -33,7 +33,7 @@ module Netsloth
         end
       end
       hash = JSON.parse(json.join("\n"))
-      summary  = hash.dig("end", "streams").first
+      summary  = hash.dig("end", "streams")&.first
       if summary.nil?
         puts "ERROR: iperf3 returned no data"
         return {}
@@ -41,7 +41,7 @@ module Netsloth
       return summary["receiver"]
     rescue Exception => exc
       puts "ERROR: could not parse iperf3 JSON output (#{exc.to_s})"
-      puts json.gsub("\n\n", "\n")
+      puts json.join("\n")
       return {}
     end
 
