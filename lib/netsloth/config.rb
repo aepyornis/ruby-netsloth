@@ -9,7 +9,9 @@ module Netsloth
         exit 1
       end
       method = method.to_s
-      if @data[method].nil?
+      if ENV[method.upcase] && ENV[method.upcase] != "unknown"
+        return ENV[method.upcase]
+      elsif @data[method].nil?
         if args.any?
           return args.first
         else

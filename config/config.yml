@@ -1,9 +1,9 @@
 gather_interval_seconds: 60
 org: 'calyx'
 bucket: 'network'
-user: 'elijah'
-location: 'seattle'
-device: 'mifi-m2000'
+user: 'unknown'
+location: 'unknown'
+device: 'unknown'
 
 iperf3_duration_seconds: 3
 iperf3_cmd: '/usr/bin/iperf3'
