@@ -57,7 +57,13 @@ Build image:
 
 Run image
 
-    docker run -it netsloth
+    docker run -it -e USER=calyx LOCATION=nyc DEVICE=mifi-m2000 netsloth
+
+Submit to container repository
+
+    docker login registry.0xacab.org
+    docker build -t netsloth -t registry.0xacab.org/calyx/experiments/netsloth .
+    docker push registry.0xacab.org/calyx/experiments/netsloth
 
 Further Reading
 ----------------------------
