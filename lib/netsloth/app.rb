@@ -15,10 +15,15 @@ module Netsloth
     end
 
     def main
-      puts "ENV USER=#{conf.user} LOCATION=#{conf.location} DEVICE=#{conf.device}"
+      puts "ENV USER=#{conf.user} LOCATION=#{conf.location} DEVICE=#{conf.device} HOST=#{conf.influxdb_host}"
       @handlers.each do |c|
         puts "SETUP #{c.name}"
         c.new(self).setup
+      end
+
+      unless client.ping.status == "ok"
+        puts "ERROR influxdb ping failed"
+        exit 1
       end
 
       while true
@@ -52,7 +57,7 @@ module Netsloth
       @db_client ||= InfluxDB2::Client.new(
         conf.influxdb_host, conf.influxdb_token,
         precision: InfluxDB2::WritePrecision::SECOND,
-        use_ssl: conf.influxdb_token.include?('https://'),
+        use_ssl: conf.influxdb_host.start_with?('https://'),
         bucket: conf.bucket,
         org: conf.org
       )
