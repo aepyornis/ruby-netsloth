@@ -16,10 +16,13 @@ module Netsloth
     private
 
     def parse_results(json)
-      json
+      data = json
         .slice("software_name", "software_version", "report_id", "measurement_start_time", "probe_asn", "test_runtime")
         .merge('hostname' => json.dig("test_keys", "server", "hostname"))
         .merge(json.dig("test_keys", "simple")) # summary data
+      data["median_bitrate_mbps"] = kbps_to_mbps(data["median_bitrate"])
+      data.delete("median_bitrate")
+      return data
     end
   end
 end

@@ -5,7 +5,7 @@ user: 'unknown'
 location: 'unknown'
 device: 'unknown'
 
-iperf3_duration_seconds: 3
+iperf3_duration_seconds: 4
 iperf3_cmd: '/usr/bin/iperf3'
 iperf3_host: 'speedtest.calyx.dev'
 iperf3_port: '5201'
@@ -20,8 +20,8 @@ influxdb_token: 'awlC8h2nY124E8joIdTUbRaATI4B00ldPIV7QRLfmdJonk5WPYu72IoOML01HPC
 measurements:
  - iperf3
  - fast
-# - ooni.dash
-# - ooni.ndt
+ - ooni.dash
+ - ooni.ndt
 # - mifi
 
 pause_between_measurements: 5

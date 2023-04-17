@@ -9,7 +9,10 @@ module Netsloth
       app.run(conf.fast_cmd, '--json', verbose: true) do |line|
         json << line
       end
-      @data = JSON.parse(json.join("\n"))
+      data = JSON.parse(json.join("\n"))
+      data["download_mbps"] = data["downloadSpeed"]
+      data.delete("downloadSpeed")
+      @data = data
     end
   end
 end

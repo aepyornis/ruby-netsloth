@@ -36,6 +36,13 @@ module Netsloth
       hsh
     end
 
+    def bps_to_mbps(bps)
+      (bps / 1_000_000.0).round(4)
+    end
+
+    def kbps_to_mbps(kbps)
+      (kbps / 1_000.0).round(4)
+    end
 
     def submit_data
       if @data && @data.any?
