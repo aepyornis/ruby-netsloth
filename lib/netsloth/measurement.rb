@@ -15,7 +15,7 @@ module Netsloth
 
     def format_data
       {
-        name: self.class.name.split(":").last.downcase,
+        name: self.class.display_name,
         tags: { location: conf.location, user: conf.user, device: conf.device },
         fields: convert_int_to_float(@data),
         time: Time.now.to_i
@@ -48,6 +48,10 @@ module Netsloth
       if @data && @data.any?
         app.writer.write(data: format_data)
       end
+    end
+
+    def self.display_name
+      self.name.sub("Netsloth::Measurement::", "")
     end
   end
 end

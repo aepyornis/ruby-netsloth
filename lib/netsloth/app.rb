@@ -17,7 +17,7 @@ module Netsloth
     def main
       puts "ENV USER=#{conf.user} LOCATION=#{conf.location} DEVICE=#{conf.device} HOST=#{conf.influxdb_host}"
       @handlers.each do |c|
-        puts "SETUP #{c.name}"
+        puts "SETUP #{c.display_name}"
         c.new(self).setup
       end
 
@@ -29,12 +29,12 @@ module Netsloth
       while true
         @handlers.each do |measurement_class|
           handler = measurement_class.new(self)
-          puts "GATHER #{measurement_class.name}"
+          puts "GATHER #{measurement_class.display_name}"
           handler.gather_data
           if @conf.debug
-            puts "DATA #{measurement_class.name} (#{conf.user},#{conf.location},#{conf.device}) #{handler.data}"
+            puts "DATA #{measurement_class.display_name} (#{conf.user},#{conf.location},#{conf.device}) #{handler.data}"
           end
-          puts "SUBMIT #{measurement_class.name}"
+          puts "SUBMIT #{measurement_class.display_name}"
           handler.submit_data
 
           if @handlers.length > 1

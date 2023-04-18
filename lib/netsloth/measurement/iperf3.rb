@@ -12,6 +12,7 @@ module Netsloth
       download = run_iperf(:download)
       @data["download_mbps"] = bps_to_mbps(download["bits_per_second"] || 0.0)
       @data["download_rtt"]  = download["mean_rtt"] || 0.0
+      puts "RESULT iperf3: #{@data["download_mbps"]} mbps down, #{@data["upload_mbps"]} mbps up"
     end
 
     private

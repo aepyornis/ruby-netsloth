@@ -8,7 +8,7 @@ require_relative 'netsloth/measurement/mifi'
 require_relative 'netsloth/measurement/ooni'
 require_relative 'netsloth/measurement/ooni/dash'
 require_relative 'netsloth/measurement/ooni/ndt'
-require_relative 'netsloth/measurement/fast'
+require_relative 'netsloth/measurement/netflix'
 require 'influxdb-client'
 
 module Netsloth

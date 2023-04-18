@@ -10,6 +10,7 @@ module Netsloth
       Tempfile.create do |f|
         app.run(conf.ooni_cmd, "dash","--yes", "--reportfile", f.path)
         @data = parse_results(JSON.parse(f.read))
+        puts "RESULT #{self.class.display_name} #{@data["median_bitrate_mbps"]} mbps"
       end
     end
 
