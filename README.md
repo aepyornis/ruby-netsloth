@@ -53,7 +53,7 @@ Docker
 
 Run the image directly from the registry:
 
-    docker run -it -e USER=calyx LOCATION=nyc DEVICE=mifi-m2000 registry.0xacab.org/calyx/experiments/netsloth:latest
+    docker run -it -e USER=calyx -e LOCATION=nyc -e DEVICE=mifi-m2000 registry.0xacab.org/calyx/experiments/netsloth:latest
 
 Build image:
 
