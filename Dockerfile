@@ -20,7 +20,9 @@ RUN ldd node_modules/puppeteer/.local-chromium/linux-*/chrome-linux/chrome | gre
 
 RUN curl -L https://github.com/ooni/probe-cli/releases/download/v3.17.1/miniooni-linux-amd64 > /usr/local/bin/miniooni-linux-amd64 && chmod +x /usr/local/bin/miniooni-linux-amd64
 
-ADD . /netsloth/
+COPY . .
+
+RUN bundle config --global silence_root_warning 1
 RUN bundle
 
 CMD ["bin/netsloth"]
