@@ -12,7 +12,8 @@ iperf3_port: '5201'
 
 ooni_cmd: '/usr/local/bin/miniooni-linux-amd64'
 
-fast_cmd: 'HOME/node_modules/.bin/fast'
+# this is the time limit for tests using fast.com
+fast_run_seconds: 4
 
 influxdb_host: 'http://185.220.103.39:8086'
 influxdb_token: 'awlC8h2nY124E8joIdTUbRaATI4B00ldPIV7QRLfmdJonk5WPYu72IoOML01HPCqFijRwTjDzwrw5oKvLg7v5A=='

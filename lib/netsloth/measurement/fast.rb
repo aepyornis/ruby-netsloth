@@ -1,18 +1,17 @@
+# temporary for now, until not_so_fast is in rubygems:
+require 'bundler/setup'
+require 'not_so_fast'
+
 module Netsloth
   class Measurement::Fast < Measurement
     def setup
-      app.ensure_command(conf.fast_cmd)
     end
 
     def gather_data
-      json = []
-      app.run(conf.fast_cmd, '--json', verbose: true) do |line|
-        json << line
+      speed = NotSoFast.run(conf.fast_run_seconds)
+      if speed != 0
+        @data = {"download_mbps" => bps_to_mbps(speed)}
       end
-      data = JSON.parse(json.join("\n"))
-      data["download_mbps"] = data["downloadSpeed"]
-      data.delete("downloadSpeed")
-      @data = data
     end
   end
 end
