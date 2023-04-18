@@ -27,7 +27,7 @@ module Netsloth
         flag
       ]
       json = []
-      app.run(*options, verbose: true) do |line|
+      app.run(*options, verbose: false) do |line|
         unless line =~ /iperf3: error/
           json << line
         end
