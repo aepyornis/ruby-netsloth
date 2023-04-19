@@ -8,7 +8,7 @@ module Netsloth
     end
 
     def gather_data
-      speed = NotSoFast.run(conf.fast_run_seconds)
+      speed = NotSoFast.run(conf.netflix_run_seconds)
       if speed != 0
         mbps = bps_to_mbps(speed)
         puts "RESULT #{self.class.display_name} #{mbps} mbps"
