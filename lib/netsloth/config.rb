@@ -1,6 +1,8 @@
 require 'yaml'
 
 module Netsloth
+  INT_FIELDS = %w[GATHER_INTERVAL_SECONDS NETFLIX_RUN_SECONDS PAUSE_BETWEEN_MEASUREMENTS IPERF3_DURATION_SECONDS]
+
   class Config
     attr :data
     def method_missing(method, *args)
@@ -10,7 +12,7 @@ module Netsloth
       end
       method = method.to_s
       if ENV[method.upcase] && ENV[method.upcase] != "unknown"
-        if method.upcase == "GATHER_INTERVAL_SECONDS"
+        if INT_FIELDS.include?(method.upcase)
           return ENV[method.upcase].to_i
         else
           return ENV[method.upcase]
