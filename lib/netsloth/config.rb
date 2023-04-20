@@ -10,7 +10,11 @@ module Netsloth
       end
       method = method.to_s
       if ENV[method.upcase] && ENV[method.upcase] != "unknown"
-        return ENV[method.upcase]
+        if method.upcase == "GATHER_INTERVAL_SECONDS"
+          return ENV[method.upcase].to_i
+        else
+          return ENV[method.upcase]
+        end
       elsif @data[method].nil?
         if args.any?
           return args.first
