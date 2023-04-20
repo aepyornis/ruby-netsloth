@@ -5,6 +5,12 @@ user: 'unknown'
 location: 'unknown'
 device: 'unknown'
 
+allowed_devices:
+ - mifi-m2000
+ - franklin-t10
+ - quanta-5g
+ - mifi-x
+
 iperf3_duration_seconds: 4
 iperf3_cmd: '/usr/bin/iperf3'
 iperf3_host: 'speedtest.calyx.dev'

@@ -12,6 +12,10 @@ module Netsloth
       @handlers = @conf.measurements.map do |measturement_name|
         Netsloth::Measurement.const_get(measturement_name.split('.').map(&:capitalize).join("::"))
       end
+      unless @conf.allowed_devices.include?(@conf.device)
+        puts "ERROR The `device` configuration must be one of #{@conf.allowed_devices.join(', ')}."
+        exit
+      end
     end
 
     def main
@@ -30,13 +34,22 @@ module Netsloth
         @handlers.each do |measurement_class|
           handler = measurement_class.new(self)
           puts "GATHER #{measurement_class.display_name}"
-          handler.gather_data
+          begin
+            handler.gather_data
+          rescue StandardError => exc
+            puts "SKIP #{measurement_class.display_name} because exception #{exc.to_s}"
+            puts "     " + exc.backtrace.join("    \n") if exc.backtrace
+          end
           if @conf.debug
             puts "DATA #{measurement_class.display_name} (#{conf.user},#{conf.location},#{conf.device}) #{handler.data}"
           end
           puts "SUBMIT #{measurement_class.display_name}"
-          handler.submit_data
-
+          begin
+            handler.submit_data
+          rescue StandardError => exc
+            puts "SKIP #{measurement_class.display_name} because exception #{exc.to_s}"
+            puts "     " + exc.backtrace.join("    \n") if exc.backtrace
+          end
           if @handlers.length > 1
             sleep conf.pause_between_measurements
           end
