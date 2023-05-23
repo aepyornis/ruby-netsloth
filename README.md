@@ -35,12 +35,6 @@ miniooni:
 
     download from https://github.com/ooni/probe-cli/releases
 
-fast-cli:
-
-    cd netsloth
-    sudo apt install npm
-    npm install fast-cli
-
 Run
 ----------------------------
 
@@ -112,7 +106,7 @@ cd netsloth
 bundle install
 ```
 
-Download miniooni: `curl -L -O "https://github.com/ooni/probe-cli/releases/download/v3.16.7/miniooni-android-arm64" && chmod +x miniooni-android-arm64`
+Download miniooni: `curl -L -O "https://github.com/ooni/probe-cli/releases/download/v3.17.2/miniooni-android-arm64" && chmod +x miniooni-android-arm64`
 
 Change variables in __config/config.yml__ to match your location, device, etc.
 
