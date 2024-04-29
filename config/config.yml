@@ -16,7 +16,7 @@ iperf3_cmd: '/usr/bin/iperf3'
 iperf3_host: 'speedtest.calyx.dev'
 iperf3_port: '5201'
 
-ooni_cmd: '/usr/local/bin/miniooni-linux-amd64'
+ooni_cmd: '/usr/local/bin/miniooni'
 
 # this is the time limit for tests using fast.com
 netflix_run_seconds: 4
