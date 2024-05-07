@@ -1,6 +1,6 @@
 gather_interval_seconds: 300
 org: 'calyx'
-bucket: 'network'
+bucket: 'netsloth'
 user: 'unknown'
 location: 'unknown'
 device: 'unknown'
@@ -10,6 +10,8 @@ allowed_devices:
  - franklin-t10
  - quanta-5g
  - mifi-x
+ - office-wifi
+ - jextream
 
 iperf3_duration_seconds: 4
 iperf3_cmd: '/usr/bin/iperf3'
@@ -19,10 +21,11 @@ iperf3_port: '5201'
 ooni_cmd: '/usr/local/bin/miniooni'
 
 # this is the time limit for tests using fast.com
-netflix_run_seconds: 4
+netflix_run_seconds: 12
 
+# https://💻🦥.calyx.dev
 influxdb_host: 'https://xn--3s8hu2f.calyx.dev'
-influxdb_token: 'hZR_dRwxok01Y5DCN3Qd3wplW5DFDCfpEAmZkQEnG3rcyVMrEQSMQHArfBUzfd-Ml01mONV4W__JI2xtyFqdaw=='
+influxdb_token: 'uKFm6ruunaJUg1fUqBr5-TBzm1s4wl-GSxngFY1q1Xd8ddy3N5XozB01ECIQVsdjp-XMqf6XRkg9_R2vYSQVFQ=='
 
 measurements:
 #- iperf3
