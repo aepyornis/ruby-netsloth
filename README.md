@@ -47,7 +47,7 @@ Docker
 
 Run the image directly from the registry:
 
-    docker run -it -e USER=calyx -e LOCATION=nyc -e DEVICE=mifi-m2000 registry.0xacab.org/calyx/experiments/netsloth:latest
+    docker run -it -e USER=calyx -e LOCATION=nyc -e DEVICE=mifi-m2000 registry.0xacab.org/calyx/gems/netsloth:latest
 
 Build image:
 
@@ -57,11 +57,6 @@ Run locally built image:
 
     docker run -it -e USER=calyx -e LOCATION=nyc -e DEVICE=mifi-m2000 netsloth
 
-Submit to container repository:
-
-    docker login registry.0xacab.org
-    docker build -t netsloth -t registry.0xacab.org/calyx/experiments/netsloth .
-    docker push registry.0xacab.org/calyx/experiments/netsloth
 
 Further Reading
 ----------------------------
