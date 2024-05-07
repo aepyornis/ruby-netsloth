@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.summary = "Gather networks stats in InfluxDB"
   spec.description = "Gather networks stats in InfluxDB"
   spec.homepage = "https://0xacab.org/calyx"
-  spec.required_ruby_version = ">= 2.6.0"
+  spec.required_ruby_version = ">= 3.1.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://0xacab.org/calyx"
@@ -23,5 +23,5 @@ Gem::Specification.new do |spec|
   spec.executables = ["netsloth"]
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "influxdb-client", "~> 2.9.0"
+  spec.add_dependency "influxdb-client", "~> 3.1.0"
 end
