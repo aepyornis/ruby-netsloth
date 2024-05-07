@@ -1,4 +1,4 @@
-FROM ruby:3.1-bookworm
+FROM ruby:3.3-bookworm
 ENV USER=unknown DEVICE=unknown LOCATION=unknown
 
 RUN apt-get update && apt-get install -y iperf3
