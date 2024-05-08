@@ -5,14 +5,17 @@ module Netsloth
     end
 
     def gather_data
-      @data = {}
+      @data = {
+        'iperf3_host' => @options.fetch('iperf3_host', conf.iperf3_host),
+        'iperf3_duration_seconds'=> @options.fetch('iperf3_duration_seconds', conf.iperf3_duration_seconds)
+      }
       upload = run_iperf(:upload)
       @data["upload_mbps"] = bps_to_mbps(upload["bits_per_second"] || 0.0)
       @data["upload_rtt"]  = upload["mean_rtt"] || 0.0
       download = run_iperf(:download)
       @data["download_mbps"] = bps_to_mbps(download["bits_per_second"] || 0.0)
       @data["download_rtt"]  = download["mean_rtt"] || 0.0
-      puts "RESULT iperf3: #{@data["download_mbps"]} mbps down, #{@data["upload_mbps"]} mbps up"
+      puts "RESULT iperf3[#{@options.fetch('iperf3_host', conf.iperf3_host)}]: #{@data["download_mbps"]} mbps down, #{@data["upload_mbps"]} mbps up"
     end
 
     private
@@ -21,9 +24,9 @@ module Netsloth
       flag = mode == :upload ? "" : "--reverse"
       options = [
         conf.iperf3_cmd,
-        '--client', conf.iperf3_host,
-        '--port', conf.iperf3_port,
-        '--time', conf.iperf3_duration_seconds,
+        '--client', @options.fetch('iperf3_host', conf.iperf3_host),
+        '--port', @options.fetch('iperf3_port', conf.iperf3_port),
+        '--time', @options.fetch('iperf3_duration_seconds', conf.iperf3_duration_seconds),
         '--json',
         flag
       ]
@@ -40,11 +43,10 @@ module Netsloth
         return {}
       end
       return summary["receiver"]
-    rescue Exception => exc
-      puts "ERROR: could not parse iperf3 JSON output (#{exc.to_s})"
+    rescue StandardError => exc
+      puts "ERROR: could not parse iperf3 JSON output (#{exc})"
       puts json.join("\n")
       return {}
     end
-
   end
 end

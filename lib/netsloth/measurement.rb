@@ -1,15 +1,25 @@
 module Netsloth
   class Measurement
-    attr :app
+    # @return [Netsloth::App] app instance
+    attr_reader :app
+    # @return [Hash] measurement data submitted to influxdb
     attr_reader :data
-    def initialize(app)
+
+    def initialize(app, options = {})
       @app = app
+      @options = options
     end
 
     def conf
       @app.conf
     end
 
+    # implement this and set @data with the results
+    def gather_data
+      raise NotImplementedError
+    end
+
+    # an optional method that will run before #gather_data
     def setup
     end
 
