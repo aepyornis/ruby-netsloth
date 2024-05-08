@@ -13,10 +13,11 @@ allowed_devices:
  - office-wifi
  - jextream
 
-iperf3_duration_seconds: 4
+
 iperf3_cmd: '/usr/bin/iperf3'
-iperf3_host: 'speedtest.calyx.dev'
 iperf3_port: '5201'
+iperf3_duration_seconds: 4
+iperf3_host: 'speedtest.calyx.dev'
 
 ooni_cmd: '/usr/local/bin/miniooni'
 
@@ -28,7 +29,7 @@ influxdb_host: 'https://xn--3s8hu2f.calyx.dev'
 influxdb_token: 'uKFm6ruunaJUg1fUqBr5-TBzm1s4wl-GSxngFY1q1Xd8ddy3N5XozB01ECIQVsdjp-XMqf6XRkg9_R2vYSQVFQ=='
 
 measurements:
-#- iperf3
+ - iperf3?iperf3_host=iperf.webdev1.calyx.dev
  - ooni.dash
  - ooni.ndt
  - netflix

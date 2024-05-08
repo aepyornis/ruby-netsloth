@@ -1,4 +1,5 @@
 module Netsloth
+  # Runs measurements configured by config/config.yml and env variables
   class App
     CONFIG = File.expand_path('../../../config/config.yml', __FILE__)
     HOME = File.expand_path('../../..', __FILE__)
@@ -9,20 +10,23 @@ module Netsloth
 
     def initialize
       @conf = Netsloth::Config.new(CONFIG)
-      @handlers = @conf.measurements.map do |measturement_name|
-        Netsloth::Measurement.const_get(measturement_name.split('.').map(&:capitalize).join("::"))
-      end
+
+      @handlers = @conf.measurements.map(&method(:get_handler))
+
       unless @conf.allowed_devices.include?(@conf.device)
         puts "ERROR The `device` configuration must be one of #{@conf.allowed_devices.join(', ')}."
         exit
       end
     end
 
+    # a forever loop that runs each measurement in turn, waiting
+    # conf.gather_interval_seconds between cycles
+    #
     def main
       puts "ENV USER=#{conf.user} LOCATION=#{conf.location} DEVICE=#{conf.device} HOST=#{conf.influxdb_host}"
-      @handlers.each do |c|
-        puts "SETUP #{c.display_name}"
-        c.new(self).setup
+      @handlers.each do |(measurement_class, options)|
+        puts "SETUP #{measurement_class.display_name}"
+        measurement_class.new(self, options).setup
       end
 
       unless client.ping.status == "ok"
@@ -31,13 +35,13 @@ module Netsloth
       end
 
       while true
-        @handlers.each do |measurement_class|
-          handler = measurement_class.new(self)
-          puts "GATHER #{measurement_class.display_name}"
+        @handlers.each do |(measurement_class, options)|
+          handler = measurement_class.new(self, options)
+          puts "GATHER #{measurement_class.display_name}" + (options.empty? ? '' : " #{options.inspect}")
           begin
             handler.gather_data
           rescue StandardError => exc
-            puts "SKIP #{measurement_class.display_name} because exception #{exc.to_s}"
+            puts "SKIP #{measurement_class.display_name} because exception #{exc}"
             puts "     " + exc.backtrace.join("    \n") if exc.backtrace
           end
           if @conf.debug
@@ -47,7 +51,7 @@ module Netsloth
           begin
             handler.submit_data
           rescue StandardError => exc
-            puts "SKIP #{measurement_class.display_name} because exception #{exc.to_s}"
+            puts "SKIP #{measurement_class.display_name} because exception #{exc}"
             puts "     " + exc.backtrace.join("    \n") if exc.backtrace
           end
           if @handlers.length > 1
@@ -78,6 +82,28 @@ module Netsloth
 
     def writer
       @db_write_api ||= client.create_write_api
+    end
+
+    private
+
+    # Measurement constants are derived from their names
+    #   ooni.dash becomes Netsloth::Measurement::Ooni::Dash
+    #
+    # They can also include a query string that will be passed as options to #new
+    #   iperf3?foo=bar [Netsloth::Measurement::Iperf3, {'foo' => 'bar'}]
+    #
+    # @param m [String] measurement name
+    # @return [Array<(Class, Hash)] measurement class and options
+    def get_handler(m)
+      options = if m.include?('?')
+                  m.split('?').last.split('&').map { |pair| pair.split('=') }.to_h
+                else
+                  {}
+                end
+
+      klass = Netsloth::Measurement.const_get(m.split('?').first.split('.').map(&:capitalize).join("::"))
+
+      [klass, options]
     end
   end
 end
