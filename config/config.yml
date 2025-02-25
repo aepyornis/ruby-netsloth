@@ -1,4 +1,4 @@
-gather_interval_seconds: 300
+gather_interval_seconds: 120
 org: 'calyx'
 bucket: 'netsloth'
 user: 'unknown'
@@ -12,7 +12,11 @@ allowed_devices:
  - mifi-x
  - office-wifi
  - jextream
-
+ - peplink-max-br1-mini
+ - mikrotik-chateau
+ - winegard-connect
+ - glinet-puli
+ - glinet-spitz-ax
 
 iperf3_cmd: '/usr/bin/iperf3'
 iperf3_port: '5201'
@@ -24,12 +28,11 @@ ooni_cmd: '/usr/local/bin/miniooni'
 # this is the time limit for tests using fast.com
 netflix_run_seconds: 12
 
-# https://💻🦥.calyx.dev
-influxdb_host: 'https://xn--3s8hu2f.calyx.dev'
-influxdb_token: 'uKFm6ruunaJUg1fUqBr5-TBzm1s4wl-GSxngFY1q1Xd8ddy3N5XozB01ECIQVsdjp-XMqf6XRkg9_R2vYSQVFQ=='
+# influxdb_host:
+# influxdb_token:
 
 measurements:
- - iperf3?iperf3_host=iperf.webdev1.calyx.dev
+# - iperf3?iperf3_host=iperf.webdev1.calyx.dev
  - ooni.dash
  - ooni.ndt
  - netflix
