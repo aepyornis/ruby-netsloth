@@ -23,5 +23,5 @@ Gem::Specification.new do |spec|
   spec.executables = ["netsloth"]
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "influxdb-client", "~> 3.1.0"
+  spec.add_dependency "influxdb-client", "~> 3.2.0"
 end
