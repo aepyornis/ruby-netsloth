@@ -4,44 +4,28 @@ module Netsloth
   module ShellUtils
     #
     # run a shell command and yield each line
-    # returns the exit code if it is non-zero, nil otherwise
+    # returns the exit code
     #
-    def run(*cmd)
-      if cmd.last.is_a?(Hash)
-        options = cmd.pop
-      else
-        options = {}
-      end
-      if cmd.include?(nil)
-        puts "ERROR: run() cannot accept nil arguments (received #{cmd.inspect})"
-        return
-      end
+    def run(*cmd, verbose: false)
       cmd = cmd.map(&:to_s)
       exit_status = -1
-      if options[:verbose]
-        puts "RUN %s" % cmd.join(' ')
-      end
+      puts "RUN #{cmd.join(' ')}" if verbose
       Open3.popen2e(ENV, *cmd) do |_stdin, out, thread|
-        while (line = out.gets) do
+        while (line = out.gets)
           yield line if block_given?
         end
         exit_status = thread.value.exitstatus.to_i
       end
-      if exit_status != 0
-        if options[:verbose]
-          puts "ERROR: #{exit_status}"
-        end
-        return exit_status
-      else
-        return nil
-      end
+
+      puts "ERROR: #{exit_status}" if verbose && exit_status != 0
+      exit_status
     end
 
     def ensure_command(cmd)
-      unless File.exist?(cmd)
-        puts "ERROR: no such command #{cmd}"
-        exit 1
-      end
+      return if File.exist?(cmd)
+
+      puts "ERROR: no such command #{cmd}"
+      exit 1
     end
   end
 end

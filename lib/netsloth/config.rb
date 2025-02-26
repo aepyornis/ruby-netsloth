@@ -1,43 +1,45 @@
 require 'yaml'
 
 module Netsloth
-  INT_FIELDS = %w[GATHER_INTERVAL_SECONDS NETFLIX_RUN_SECONDS PAUSE_BETWEEN_MEASUREMENTS IPERF3_DURATION_SECONDS]
+  INT_FIELDS = %w[GATHER_INTERVAL_SECONDS NETFLIX_RUN_SECONDS PAUSE_BETWEEN_MEASUREMENTS
+                  IPERF3_DURATION_SECONDS].to_set.freeze
 
+  # Configuration. Value can be
   class Config
-    attr :data
+    attr_reader :data
+
     def method_missing(method, *args)
-      if @data.nil?
-        puts "No config loaded"
-        exit 1
-      end
+      raise 'No config loaded' if @data.nil?
+
       method = method.to_s
-      if ENV[method.upcase] && ENV[method.upcase] != "unknown"
-        if INT_FIELDS.include?(method.upcase)
-          return ENV[method.upcase].to_i
-        else
-          return ENV[method.upcase]
-        end
-      elsif @data[method].nil?
-        if args.any?
-          return args.first
-        else
-          raise ArgumentError, "No such configuration variable #{method}"
-        end
+
+      if @data.key?(method)
+        @data[method]
+      elsif args.any?
+        args.first
       else
-        if @data[method].is_a? String
-          @data[method].sub('HOME',Netsloth::App::HOME)
-        else
-          @data[method]
-        end
+        raise ArgumentError, "No such configuration variable #{method}"
       end
     end
 
+    # Yaml configuration values
     def initialize(path)
       unless File.exist?(path)
         puts "No such configuration file #{path}"
         exit 1
       end
       @data = YAML.load_file(path)
+
+      # env variable override
+      @data.keys.map(&:upcase).each do |k|
+        next unless ENV[k] && ENV[k] != 'unknown'
+
+        @data[k.downcase] = if INT_FIELDS.include?(k)
+                              ENV[k].to_i
+                            else
+                              ENV[k]
+                            end
+      end
     end
   end
 end
