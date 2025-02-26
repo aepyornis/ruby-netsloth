@@ -15,7 +15,7 @@ module Netsloth
 
         def gather_data
           Tempfile.create do |f|
-            app.run(conf.ooni_cmd, self.class.command, '--yes', '--reportfile', f.path)
+            app.run(conf.ooni_cmd, self.class.command, '--yes', '--reportfile', f.path, verbose: app.conf.debug)
             @data = parse_ooni(JSON.parse(f.read))
             print_result
           end

@@ -32,7 +32,7 @@ module Netsloth
         flag
       ]
       json = []
-      app.run(*options, verbose: false) do |line|
+      app.run(*options, verbose: app.conf.debug) do |line|
         json << line unless line =~ /iperf3: error/
       end
       hash = JSON.parse(json.join("\n"))
