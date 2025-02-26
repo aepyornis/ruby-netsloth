@@ -5,17 +5,17 @@ module Netsloth
     module Ooni
       # https://ooni.org/nettest/ndt/
       class Ndt < Measurement
-        @command = "ndt"
+        @command = 'ndt'
 
         def parse_ooni(json)
           data = json
-                   .slice("software_name", "software_version", "report_id", "measurement_start_time", "test_runtime", "probe_asn")
-                   .merge('hostname' => json.dig("test_keys", "server", "hostname"))
-                   .merge(json.dig("test_keys", "summary"))
-          data["download_mbps"] = kbps_to_mbps(data["download"])
-          data["upload_mbps"] = kbps_to_mbps(data["upload"])
-          data.delete("download")
-          data.delete("upload")
+                   .slice('software_name', 'software_version', 'report_id', 'measurement_start_time', 'test_runtime', 'probe_asn')
+                   .merge('hostname' => json.dig('test_keys', 'server', 'hostname'))
+                   .merge(json.dig('test_keys', 'summary'))
+          data['download_mbps'] = kbps_to_mbps(data['download'])
+          data['upload_mbps'] = kbps_to_mbps(data['upload'])
+          data.delete('download')
+          data.delete('upload')
           data
         end
 

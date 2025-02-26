@@ -1,8 +1,8 @@
 module Netsloth
   # Runs measurements configured by config/config.yml and env variables
   class App
-    CONFIG = File.expand_path('../../../config/config.yml', __FILE__)
-    HOME = File.expand_path('../../..', __FILE__)
+    CONFIG = File.expand_path('../../config/config.yml', __dir__)
+    HOME = File.expand_path('../..', __dir__)
 
     include ShellUtils
 
@@ -13,10 +13,10 @@ module Netsloth
 
       @handlers = @conf.measurements.map(&method(:get_handler))
 
-      unless @conf.allowed_devices.include?(@conf.device)
-        puts "ERROR The `device` configuration must be one of #{@conf.allowed_devices.join(', ')}."
-        exit
-      end
+      return if @conf.allowed_devices.include?(@conf.device)
+
+      puts "ERROR The `device` configuration must be one of #{@conf.allowed_devices.join(', ')}."
+      exit
     end
 
     # a forever loop that runs each measurement in turn, waiting
@@ -29,8 +29,8 @@ module Netsloth
         measurement_class.new(self, options).setup
       end
 
-      unless client.ping.status == "ok"
-        puts "ERROR influxdb ping failed"
+      unless client.ping.status == 'ok'
+        puts 'ERROR influxdb ping failed'
         exit 1
       end
 
@@ -40,9 +40,9 @@ module Netsloth
           puts "GATHER #{measurement_class.display_name}" + (options.empty? ? '' : " #{options.inspect}")
           begin
             handler.gather_data
-          rescue StandardError => exc
-            puts "SKIP #{measurement_class.display_name} because #{exc.inspect}"
-            puts "\t" + exc.backtrace.join("\n\t")
+          rescue StandardError => e
+            puts "SKIP #{measurement_class.display_name} because #{e.inspect}"
+            puts "\t" + e.backtrace.join("\n\t")
           end
           if @conf.debug
             puts "DATA #{measurement_class.display_name} (#{conf.user},#{conf.location},#{conf.device}) #{handler.data}"
@@ -50,23 +50,21 @@ module Netsloth
           puts "SUBMIT #{measurement_class.display_name}"
           begin
             handler.submit_data
-          rescue StandardError => exc
-            puts "SKIP #{measurement_class.display_name} because exception #{exc}"
-            puts "     " + exc.backtrace.join("    \n") if exc.backtrace
+          rescue StandardError => e
+            puts "SKIP #{measurement_class.display_name} because exception #{e}"
+            puts '     ' + e.backtrace.join("    \n") if e.backtrace
           end
-          if @handlers.length > 1
-            sleep conf.pause_between_measurements
-          end
+          sleep conf.pause_between_measurements if @handlers.length > 1
         end
         puts "SLEEP for #{conf.gather_interval_seconds} seconds"
         sleep conf.gather_interval_seconds
       end
-      puts "DONE"
+      puts 'DONE'
     end
 
     # be more graceful in the future...
     def quit
-      puts "QUIT"
+      puts 'QUIT'
       exit
     end
 
@@ -101,7 +99,7 @@ module Netsloth
                   {}
                 end
 
-      klass = Netsloth::Measurement.const_get(m.split('?').first.split('.').map(&:capitalize).join("::"))
+      klass = Netsloth::Measurement.const_get(m.split('?').first.split('.').map(&:capitalize).join('::'))
 
       [klass, options]
     end

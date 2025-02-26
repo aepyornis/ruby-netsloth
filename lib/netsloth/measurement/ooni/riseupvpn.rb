@@ -3,7 +3,7 @@ module Netsloth
     module Ooni
       # https://ooni.org/nettest/riseupvpn/
       class Riseupvpn < Measurement
-        @command = "riseupvpn"
+        @command = 'riseupvpn'
 
         def parse_ooni(json)
           json

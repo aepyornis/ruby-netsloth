@@ -3,7 +3,7 @@ module Netsloth
     module Ooni
       # https://ooni.org/nettest/tor/
       class Tor < Measurement
-        @command = "tor"
+        @command = 'tor'
 
         def parse_ooni(json)
           json

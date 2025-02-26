@@ -55,13 +55,13 @@ module Netsloth
     end
 
     def submit_data
-      if @data && @data.any?
-        app.writer.write(data: format_data)
-      end
+      return unless @data && @data.any?
+
+      app.writer.write(data: format_data)
     end
 
     def self.display_name
-      self.name.sub("Netsloth::Measurement::", "")
+      name.sub('Netsloth::Measurement::', '')
     end
   end
 end

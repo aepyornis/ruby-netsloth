@@ -19,11 +19,11 @@ module Netsloth
         else
           mbps = bps_to_mbps(speed)
           puts "RESULT #{self.class.display_name} #{mbps} mbps"
-          @data = {"download_mbps" => mbps}
+          @data = { 'download_mbps' => mbps }
           return
         end
       end
-      puts "GIVING UP"
+      puts 'GIVING UP'
     end
   end
 end

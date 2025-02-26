@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-require_relative "../lib/netsloth"
+require_relative '../lib/netsloth'
 
-trap("SIGINT") { $app.quit }
+trap('SIGINT') { $app.quit }
 
 $app = Netsloth::App.new
-$app.main()
+$app.main
