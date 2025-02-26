@@ -1,4 +1,4 @@
-gather_interval_seconds: 120
+gather_interval_seconds: 180
 org: 'calyx'
 bucket: 'netsloth'
 user: 'unknown'
@@ -32,13 +32,13 @@ influxdb_host: null
 influxdb_token: null
 
 measurements:
-# - iperf3?iperf3_host=iperf.webdev1.calyx.dev
-# - mifi
-  - netflix
-  - ooni.dash
-  - ooni.ndt
-# - ooni.tor
-# - ooni.riseupvpn
+ - netflix
+ - ooni.dash
+ - ooni.ndt
+ - ooni.riseupvpn
+ # - ooni.tor
+ # - iperf3?iperf3_host=iperf.webdev1.calyx.dev
+ # - mifi
 
 pause_between_measurements: 5
 debug: false
