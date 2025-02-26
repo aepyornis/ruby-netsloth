@@ -28,8 +28,8 @@ ooni_cmd: '/usr/local/bin/miniooni'
 # this is the time limit for tests using fast.com
 netflix_run_seconds: 12
 
-# influxdb_host:
-# influxdb_token:
+influxdb_host: null
+influxdb_token: null
 
 measurements:
 # - iperf3?iperf3_host=iperf.webdev1.calyx.dev

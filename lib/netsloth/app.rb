@@ -13,10 +13,10 @@ module Netsloth
 
       @handlers = @conf.measurements.map(&method(:get_handler))
 
-      return if @conf.allowed_devices.include?(@conf.device)
-
-      puts "ERROR The `device` configuration must be one of #{@conf.allowed_devices.join(', ')}."
-      exit
+      unless @conf.allowed_devices.include?(@conf.device)
+        puts "ERROR The `device` configuration must be one of #{@conf.allowed_devices.join(', ')}."
+        exit 1
+      end
     end
 
     # a forever loop that runs each measurement in turn, waiting
