@@ -41,8 +41,8 @@ module Netsloth
           begin
             handler.gather_data
           rescue StandardError => exc
-            puts "SKIP #{measurement_class.display_name} because exception #{exc}"
-            puts "     " + exc.backtrace.join("    \n") if exc.backtrace
+            puts "SKIP #{measurement_class.display_name} because #{exc.inspect}"
+            puts "\t" + exc.backtrace.join("\n\t")
           end
           if @conf.debug
             puts "DATA #{measurement_class.display_name} (#{conf.user},#{conf.location},#{conf.device}) #{handler.data}"
