@@ -3,6 +3,9 @@
 require_relative '../lib/netsloth'
 
 trap('SIGINT') { $app.quit }
+trap('SIGTERM') { $app.quit }
+# required for riseupvpn test
+ENV['OONI_FORCE_ENABLE_EXPERIMENT'] = '1'
 
 $app = Netsloth::App.new
 $app.main

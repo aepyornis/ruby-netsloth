@@ -13,10 +13,10 @@ module Netsloth
 
       @handlers = @conf.measurements.map(&method(:get_handler))
 
-      unless @conf.allowed_devices.include?(@conf.device)
-        puts "ERROR The `device` configuration must be one of #{@conf.allowed_devices.join(', ')}."
-        exit 1
-      end
+      return if @conf.allowed_devices.include?(@conf.device)
+
+      puts "ERROR The `device` configuration must be one of #{@conf.allowed_devices.join(', ')}."
+      exit 1
     end
 
     # a forever loop that runs each measurement in turn, waiting
@@ -36,6 +36,9 @@ module Netsloth
       end
 
       while true
+        @sigint_received = false
+        @sleep = false
+
         @handlers.each do |(measurement_class, options)|
           handler = measurement_class.new(self, options)
           puts "GATHER #{measurement_class.display_name}" + (options.empty? ? '' : " #{options.inspect}")
@@ -55,18 +58,32 @@ module Netsloth
             puts "SKIP #{measurement_class.display_name} because exception #{e}"
             puts '     ' + e.backtrace.join("    \n") if e.backtrace
           end
+          if @sigint_received
+            puts 'EXIT'
+            exit
+          end
           sleep conf.pause_between_measurements if @handlers.length > 1
         end
-        puts "SLEEP for #{conf.gather_interval_seconds} seconds"
-        sleep conf.gather_interval_seconds
+
+        if @sigint_received
+          puts 'EXIT'
+          exit
+        else
+          puts "SLEEP for #{conf.gather_interval_seconds} seconds"
+          @sleep = true
+          sleep conf.gather_interval_seconds
+        end
       end
-      puts 'DONE'
     end
 
     # be more graceful in the future...
     def quit
-      puts 'QUIT'
-      exit
+      if @sleep
+        exit
+      else
+        @sigint_received = true
+        puts 'WAITING for measurement to finish'
+      end
     end
 
     def client

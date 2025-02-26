@@ -24,11 +24,11 @@ module Netsloth
     end
 
     def format_data
-      {
+      @format_data ||= {
         name: self.class.display_name,
         tags: { location: conf.location, user: conf.user, device: conf.device },
         fields: convert_int_to_float(@data),
-        time: Time.now.to_i
+        time: Time.now.to_f
       }
     end
 
@@ -40,7 +40,7 @@ module Netsloth
         if value.is_a? Integer
           hsh[key] = value.to_f
         elsif value.is_a? Hash
-          ensure_float(hsh[key])
+          convert_int_to_float(hsh[key])
         end
       end
       hsh
@@ -55,8 +55,9 @@ module Netsloth
     end
 
     def submit_data
-      return unless @data && @data.any?
+      return unless @data&.any?
 
+      puts "WRITE #{format_data.inspect}" if @app.conf.debug
       app.writer.write(data: format_data)
     end
 
