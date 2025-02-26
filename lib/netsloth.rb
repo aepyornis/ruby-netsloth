@@ -10,6 +10,6 @@ require_relative 'netsloth/measurement/mifi'
 require_relative 'netsloth/measurement/netflix'
 require_relative 'netsloth/measurement/ooni'
 
-# Takes network measurements and uploads the results to Influxdb
+# Gather network stats and upload the results to Influxdb
 module Netsloth
 end

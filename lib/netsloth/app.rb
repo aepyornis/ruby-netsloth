@@ -24,6 +24,7 @@ module Netsloth
     #
     def main
       puts "ENV USER=#{conf.user} LOCATION=#{conf.location} DEVICE=#{conf.device} HOST=#{conf.influxdb_host}"
+      puts "CONFIG #{conf.data.to_json}"
       @handlers.each do |(measurement_class, options)|
         puts "SETUP #{measurement_class.display_name}"
         measurement_class.new(self, options).setup
