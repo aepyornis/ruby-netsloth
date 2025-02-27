@@ -8,8 +8,10 @@ module Netsloth
 
     attr_reader :conf, :handlers
 
-    def initialize
-      @conf = Netsloth::Config.new(CONFIG)
+    def initialize(f = nil)
+      configfile = f || CONFIG
+      puts "CONFIGFILE #{configfile}"
+      @conf = Netsloth::Config.new(configfile)
 
       @handlers = @conf.measurements.map(&method(:get_handler))
 
