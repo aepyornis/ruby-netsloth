@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-
+require 'optparse'
 require_relative '../lib/netsloth'
 
 trap('SIGINT') { $app.quit }
@@ -7,5 +7,18 @@ trap('SIGTERM') { $app.quit }
 # required for riseupvpn test
 ENV['OONI_FORCE_ENABLE_EXPERIMENT'] = '1'
 
-$app = Netsloth::App.new
+configfile = nil
+
+OptionParser.new do |parser|
+  parser.banner = "netsloth [options]"
+  parser.on("-cCONFIG", "--config=CONFIG", "Configure file to use") do |f|
+    configfile = f
+  end
+  parser.on("-h", "--help", "Prints this help") do
+    puts parser
+    exit
+  end
+end.parse!
+
+$app = Netsloth::App.new(configfile)
 $app.main
