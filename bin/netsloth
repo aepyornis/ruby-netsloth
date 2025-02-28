@@ -8,17 +8,26 @@ trap('SIGTERM') { $app.quit }
 ENV['OONI_FORCE_ENABLE_EXPERIMENT'] = '1'
 
 configfile = nil
+once = false
 
 OptionParser.new do |parser|
-  parser.banner = "netsloth [options]"
-  parser.on("-cCONFIG", "--config=CONFIG", "Configure file to use") do |f|
+  parser.banner = 'netsloth [options]'
+  parser.on('-cCONFIG', '--config=CONFIG', 'Configure file to use') do |f|
     configfile = f
   end
-  parser.on("-h", "--help", "Prints this help") do
+  parser.on('-o', '--once', 'Run the measurments one time ') do
+    once = true
+  end
+  parser.on('-h', '--help', 'Prints this help') do
     puts parser
     exit
   end
 end.parse!
 
 $app = Netsloth::App.new(configfile)
-$app.main
+
+if once
+  $app.run_once
+else
+  $app.main
+end

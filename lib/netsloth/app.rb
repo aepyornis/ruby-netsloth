@@ -1,32 +1,24 @@
 module Netsloth
-  # Runs measurements configured by config/config.yml and env variables
+  # Runs all measurements configured
+  # ENV variable overrides configuration file
   class App
     CONFIG = File.expand_path('../../config/config.yml', __dir__)
     HOME = File.expand_path('../..', __dir__)
 
-    include ShellUtils
+    # @return [Netsloth::Config] global configuration
+    attr_reader :conf
 
-    attr_reader :conf, :handlers
+    # @return [Netsloth::Measurement] enabled measurements to run
+    attr_reader :handlers
 
+    # @param f [String] alternative to config.yml
     def initialize(f = nil)
       configfile = f || CONFIG
       puts "CONFIGFILE #{configfile}"
       @conf = Netsloth::Config.new(configfile)
 
-      @handlers = @conf.measurements.map(&method(:get_handler))
+      @handlers = @conf.measurements.map { |m| get_handler(m) }
 
-      return if @conf.allowed_devices.include?(@conf.device)
-
-      puts "ERROR The `device` configuration must be one of #{@conf.allowed_devices.join(', ')}."
-      exit 1
-    end
-
-    # a forever loop that runs each measurement in turn, waiting
-    # conf.gather_interval_seconds between cycles
-    #
-    def main
-      puts "ENV USER=#{conf.user} LOCATION=#{conf.location} DEVICE=#{conf.device} HOST=#{conf.influxdb_host}"
-      puts "CONFIG #{conf.data.to_json}"
       @handlers.each do |(measurement_class, options)|
         puts "SETUP #{measurement_class.display_name}"
         measurement_class.new(self, options).setup
@@ -36,45 +28,31 @@ module Netsloth
         puts 'ERROR influxdb ping failed'
         exit 1
       end
+    end
 
+    def run_once
+      @handlers.each do |(measurement_class, options)|
+        handler = measurement_class.new(self, options)
+        handler.run
+        sleep conf.pause_between_measurements if @handlers.length > 1 && conf.pause_between_measurements
+      end
+    end
+
+    # a forever loop that runs each measurement in turn, waiting
+    # conf.gather_interval_seconds between cycles
+    #
+    def main
+      @sigint_received = false
+      @sleep = false
       while true
-        @sigint_received = false
-        @sleep = false
-
-        @handlers.each do |(measurement_class, options)|
-          handler = measurement_class.new(self, options)
-          puts "GATHER #{measurement_class.display_name}" + (options.empty? ? '' : " #{options.inspect}")
-          begin
-            handler.gather_data
-          rescue StandardError => e
-            puts "SKIP #{measurement_class.display_name} because #{e.inspect}"
-            puts "\t" + e.backtrace.join("\n\t")
-          end
-          if @conf.debug
-            puts "DATA #{measurement_class.display_name} (#{conf.user},#{conf.location},#{conf.device}) #{handler.data}"
-          end
-          puts "SUBMIT #{measurement_class.display_name}"
-          begin
-            handler.submit_data
-          rescue StandardError => e
-            puts "SKIP #{measurement_class.display_name} because exception #{e}"
-            puts '     ' + e.backtrace.join("    \n") if e.backtrace
-          end
-          if @sigint_received
-            puts 'EXIT'
-            exit
-          end
-          sleep conf.pause_between_measurements if @handlers.length > 1
-        end
-
+        run_once
         if @sigint_received
           puts 'EXIT'
           exit
-        else
-          puts "SLEEP for #{conf.gather_interval_seconds} seconds"
-          @sleep = true
-          sleep conf.gather_interval_seconds
         end
+        puts "SLEEP for #{conf.gather_interval_seconds} seconds"
+        @sleep = true
+        sleep conf.gather_interval_seconds
       end
     end
 

@@ -1,10 +1,19 @@
 module Netsloth
+  # Run a network test and submit it to a remote influxdb database
   class Measurement
     # @return [Netsloth::App] app instance
     attr_reader :app
-    # @return [Hash] measurement data submitted to influxdb
+    # @return [Hash] measurement data
     attr_reader :data
+    # @return [Hash] submission sent to influxdb
+    attr_reader :submission
 
+    def self.display_name
+      name.sub('Netsloth::Measurement::', '')
+    end
+
+    # @param [Netsloth::App]
+    # @param options [Hash]
     def initialize(app, options = {})
       @app = app
       @options = options
@@ -14,36 +23,74 @@ module Netsloth
       @app.conf
     end
 
-    # implement this and set @data with the results
-    def gather_data
-      raise NotImplementedError
+    def display_name
+      "#{self.class.display_name} (#{@options.inspect}) (#{conf.user},#{conf.location},#{conf.device})"
     end
 
-    # an optional method that will run before #gather_data
+    # an optional method run once during setup
     def setup
     end
 
-    def format_data
-      @format_data ||= {
-        name: self.class.display_name,
-        tags: { location: conf.location, user: conf.user, device: conf.device },
-        fields: convert_int_to_float(@data),
-        time: Time.now.to_f
-      }
+    def run
+      begin
+        puts "GATHER #{display_name}"
+        gather
+      rescue StandardError => e
+        log_exc(e)
+        puts "SKIP #{display_name}"
+        return
+      end
+
+      puts "DATA #{@data.to_json}" if conf.debug
+
+      begin
+        puts "SUBMIT #{display_name}"
+        submit
+      rescue StandardError => e
+        puts "SUBMIT ERROR #{display_name}"
+        log_exc(e)
+      end
     end
 
-    # ensures that all the number types are floats, since with InfluxDB you cannot
-    # first submit an integer and then later submit a float.
-    # There is probably a better way where we can first submit a schema.
-    def convert_int_to_float(hsh)
-      hsh.each do |key, value|
-        if value.is_a? Integer
-          hsh[key] = value.to_f
-        elsif value.is_a? Hash
-          convert_int_to_float(hsh[key])
+    # implement this and set @data with the results
+    def gather
+      raise NotImplementedError
+    end
+
+    # write to InfluxDB2::WriteApi
+    def submit
+      if @data.nil?
+        puts 'SKIP NO DATA'
+      else
+        @submission = influxdb_submission
+        freeze
+        puts "WRITE #{@submission}" if conf.debug
+        @app.writer.write(data: @submission)
+      end
+    end
+
+    protected
+
+    def influxdb_submission
+      fields = @data.transform_values do |value|
+        case value
+        when Integer
+          # store ints as floats in InfluxDB
+          value.to_f
+        when Hash
+          value.to_json
+        else
+          value
         end
       end
-      hsh
+
+      tags = {
+        location: conf.location,
+        user: conf.user,
+        device: conf.device
+      }
+
+      { time: Time.now.to_f, name: self.class.display_name, tags:, fields: }
     end
 
     def bps_to_mbps(bps)
@@ -54,15 +101,9 @@ module Netsloth
       (kbps / 1_000.0).round(4)
     end
 
-    def submit_data
-      return unless @data&.any?
-
-      puts "WRITE #{format_data.inspect}" if @app.conf.debug
-      app.writer.write(data: format_data)
-    end
-
-    def self.display_name
-      name.sub('Netsloth::Measurement::', '')
+    def log_exc(exc)
+      puts "ERROR: #{exc.inspect}"
+      puts "\t" + exc.backtrace.join("\t\n") if exc.backtrace
     end
   end
 end

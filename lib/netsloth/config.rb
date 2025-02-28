@@ -4,7 +4,6 @@ module Netsloth
   INT_FIELDS = %w[GATHER_INTERVAL_SECONDS NETFLIX_RUN_SECONDS PAUSE_BETWEEN_MEASUREMENTS
                   IPERF3_DURATION_SECONDS].to_set.freeze
 
-  # Configuration. Value can be
   class Config
     attr_reader :data
 
@@ -22,10 +21,13 @@ module Netsloth
       end
     end
 
-    # Yaml configuration values
+    def respond_to_missing?(name, include_private)
+      @data.key?(name) || super
+    end
+
     def initialize(path)
       unless File.exist?(path)
-        puts "No such configuration file #{path}"
+        puts "ERROR No such configuration file #{path}"
         exit 1
       end
       @data = YAML.load_file(path)
@@ -40,6 +42,18 @@ module Netsloth
                               ENV[k]
                             end
       end
+
+      unless allowed_devices.include?(device)
+        puts "ERROR device not configured in allowed devices: #{allowed_devices.join(', ')}."
+        exit 1
+      end
+
+      unless influxdb_token && influxdb_host && measurements && user && device && location && gather_interval_seconds
+        puts 'ERROR invalid configuration'
+        exit 1
+      end
+
+      puts "CONFIG user=#{user} location=#{location} device=#{device} influxdb_host=#{influxdb_host} gather_interval_seconds=#{gather_interval_seconds}"
     end
   end
 end

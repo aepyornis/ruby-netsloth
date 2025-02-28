@@ -7,7 +7,7 @@ module Netsloth
     def setup
     end
 
-    def gather_data
+    def gather
       attempts_left = 5
       while attempts_left > 0
         speed = NotSoFast.run(conf.netflix_run_seconds)

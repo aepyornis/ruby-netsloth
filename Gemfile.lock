@@ -7,7 +7,7 @@ GIT
 PATH
   remote: .
   specs:
-    netsloth (0.1.0)
+    netsloth (0.2.0)
       influxdb-client (~> 3.2.0)
 
 GEM

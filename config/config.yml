@@ -1,4 +1,4 @@
-gather_interval_seconds: 180
+gather_interval_seconds: 300
 org: 'calyx'
 bucket: 'netsloth'
 user: 'unknown'
@@ -35,10 +35,12 @@ measurements:
  - netflix
  - ooni.dash
  - ooni.ndt
- - ooni.riseupvpn
+ # - ooni.riseupvpn
+ # - mifi
+
  # - ooni.tor
  # - iperf3?iperf3_host=iperf.webdev1.calyx.dev
- # - mifi
+
 
 pause_between_measurements: 5
 debug: false
