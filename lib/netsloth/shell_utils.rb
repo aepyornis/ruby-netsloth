@@ -6,7 +6,7 @@ module Netsloth
     # run a shell command and yield each line
     # returns the exit code
     #
-    def run(*cmd, verbose: false)
+    def self.run(*cmd, verbose: false)
       cmd = cmd.map(&:to_s)
       exit_status = -1
       puts "RUN #{cmd.join(' ')}" if verbose
@@ -21,7 +21,7 @@ module Netsloth
       exit_status
     end
 
-    def ensure_command(cmd)
+    def self.ensure_command(cmd)
       return if File.exist?(cmd)
 
       puts "ERROR: no such command #{cmd}"

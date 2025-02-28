@@ -1,36 +1,29 @@
 require 'net/http'
 
 module Netsloth
-  class Measurement::Mifi < Measurement
-    ENDPOINT = 'http://192.168.1.1/srv/status'
+  class Measurement
+    class Mifi < Measurement
+      ENDPOINT = 'http://192.168.1.1/srv/status'
 
-    def setup
-      r = Net::HTTP.get_response(URI(ENDPOINT))
-      return if r.is_a?(Net::HTTPSuccess) && r['Server'] == 'MiFi'
+      INT_FIELDS = %w[statusBarBatteryPercent statusBarBytesReceived statusBarBytesTotal statusBarBytesTransmitted
+                    statusBarClientListSize statusBarSignalBars].freeze
 
-      raise 'Not connected to a MiFi hotspot'
-    end
+      def setup
+        r = Net::HTTP.get_response(URI(ENDPOINT))
+        return if r.is_a?(Net::HTTPSuccess) && r['Server'] == 'MiFi'
 
-    def gather_data
-      results = JSON.parse(Net::HTTP.get(URI(ENDPOINT)))['statusData']
-      if results.nil?
-        puts 'Error gathering data from mifi'
-        nil
-      else
-        @data = parse_results(results)
+        raise 'Not connected to a MiFi hotspot'
       end
-    end
 
-    private
+      def gather
+        @data = JSON.parse(Net::HTTP.get(URI(ENDPOINT)))['statusData']
 
-    INT_FIELDS = %w[statusBarBatteryPercent statusBarBytesReceived statusBarBytesTotal statusBarBytesTransmitted
-                    statusBarClientListSize statusBarSignalBars]
+        INT_FIELDS.each do |f|
+          @data[f] = @data[f].to_i unless @data[f].nil?
+        end
 
-    def parse_results(json)
-      INT_FIELDS.each do |f|
-        json[f] = json[f].to_i unless json[f].nil?
+        puts "RESULT #{@data['statusBarTechnology']} #{@data['statusBarSignalBars']} bars"
       end
-      json
     end
   end
 end

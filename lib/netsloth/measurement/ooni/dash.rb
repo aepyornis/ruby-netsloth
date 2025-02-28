@@ -11,7 +11,7 @@ module Netsloth
                    .merge('hostname' => json.dig('test_keys', 'server', 'hostname'))
                    .merge(json.dig('test_keys', 'simple')) # summary data
           data['median_bitrate_mbps'] = kbps_to_mbps(data['median_bitrate'])
-          data.delete('median_bitrate')
+          data['dash_median_bitrate'] = data.delete('median_bitrate')
           data
         end
 

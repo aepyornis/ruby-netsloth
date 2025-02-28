@@ -18,5 +18,8 @@ Style/FrozenStringLiteralComment:
 Style/EmptyMethod:
   Enabled: false
 
+Style/GuardClause:
+  Enabled: false
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented_relative_to_receiver

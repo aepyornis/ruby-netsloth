@@ -4,7 +4,7 @@ module Netsloth
       app.ensure_command(conf.iperf3_cmd)
     end
 
-    def gather_data
+    def gather
       @data = {
         'iperf3_host' => @options.fetch('iperf3_host', conf.iperf3_host),
         'iperf3_duration_seconds' => @options.fetch('iperf3_duration_seconds', conf.iperf3_duration_seconds)
