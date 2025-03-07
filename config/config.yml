@@ -29,7 +29,8 @@ ooni_cmd: '/usr/local/bin/miniooni'
 netflix_run_seconds: 12
 
 influxdb_host: null
-influxdb_token: null
+influxdb_write_token: null
+influxdb_read_token: null
 
 measurements:
  - netflix
@@ -44,3 +45,4 @@ measurements:
 
 pause_between_measurements: 5
 debug: false
+readonly: false

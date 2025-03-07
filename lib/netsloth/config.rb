@@ -48,7 +48,7 @@ module Netsloth
         exit 1
       end
 
-      unless influxdb_token && influxdb_host && measurements && user && device && location && gather_interval_seconds
+      unless (influxdb_write_token || influxdb_token || readonly) && (influxdb_write_host || influxdb_host || readonly) && measurements && user && device && location && gather_interval_seconds
         puts 'ERROR invalid configuration'
         exit 1
       end
